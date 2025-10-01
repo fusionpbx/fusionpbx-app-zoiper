@@ -26,7 +26,6 @@
 
 //includes files
 	require_once dirname(__DIR__, 2) . "/resources/require.php";
-	require_once "resources/pdo.php";
 	require_once "resources/check_auth.php";
 	require_once "resources/paging.php";
 
@@ -44,8 +43,8 @@
 	$text = $language->get();
 	
 //get the https values and set as variables
-	$order_by = check_str($_GET["order_by"]);
-	$order = check_str($_GET["order"]);
+	$order_by = $_GET["order_by"];
+	$order = $_GET["order"];
 
 //get the SIP port if set. If not default will be 5060 in zoiper app
 	if (isset($_SESSION['zoiper']['sip_port']['text'])) {
@@ -53,12 +52,13 @@
 	}
 
 //handle search term
-	$search = check_str($_GET["search"]);
+	$search = $_GET["search"];
 	if (strlen($search) > 0) {
-		$sql_mod = "and ( ";
-		$sql_mod .= "extension ILIKE '%".$search."%' ";
-		$sql_mod .= "or description ILIKE '%".$search."%' ";
-		$sql_mod .= ") ";
+		$sql_search = "and ( ";
+		$sql_search .= "extension ILIKE :search ";
+		$sql_search .= "or description ILIKE :search ";
+		$sql_search .= ") ";
+		$parameters['search'] = '%'.$search."%";
 	}
 	if (strlen($order_by) < 1) {
 		$order_by = "extension";
@@ -66,18 +66,18 @@
 	}
 
 //get total extension count from the database
-	$sql = "select count(*) as num_rows from v_extensions where domain_uuid = '".$_SESSION['domain_uuid']."' ".$sql_mod." ";
+	$sql = "select count(*) as num_rows from v_extensions ";
+	$sql .= "where domain_uuid = :domain_uuid ";
+	$sql .= $sql_search;
 	//$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
-	$prep_statement = $db->prepare($sql);
-	if ($prep_statement) {
-		$prep_statement->execute();
-		$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+
+	$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
+	$row = $database->select($sql, $parameters, 'all');
+	if (is_array($row)) {
 		$total_extensions = $row['num_rows'];
-		if (($db_type == "pgsql") or ($db_type == "mysql")) {
-			$numeric_extensions = $row['num_rows'];
-		}
+		$numeric_extensions = $row['num_rows'];
 	}
-	unset($prep_statement, $row);
+	unset($row);
 
 
 //prepare to page the results
@@ -91,8 +91,8 @@
 
 //get all the extensions from the database
 	$sql = "select * from v_extensions ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= $sql_mod; //add search mod from above	
+	$sql .= "where domain_uuid = :domain_uuid ";
+	$sql .= $sql_search;//add search mod from above	
 	$sql .= "and enabled = 'true' ";
 	if (!(if_group("admin") || if_group("superadmin"))) {
 		if (count($_SESSION['user']['extension']) > 0) {
@@ -117,11 +117,9 @@
 		$sql .= "order by extension asc ";
 	}
 	$sql .= " limit $rows_per_page offset $offset ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+	$result = $database->select($sql, $parameters, 'all');
 	$result_count = count($result);
-	unset ($prep_statement, $sql);
+	unset ($sql);
 
 	$c = 0;
 	$row_style["0"] = "row_style0";
@@ -134,12 +132,12 @@
 	echo "	<td align='left' width='100%'>\n";
 	echo "		<b>".$text['title']."</b><br>\n";
 	echo "	</td>\n";
-	echo "		<td align='right' width='100%' style='vertical-align: top;'>\n";
+	echo "		<td align='right' width='100%' style='vertical-align: top;'>";
 	if ((if_group("admin") || if_group("superadmin"))) {
 		echo "		<form method='get' action=''>\n";
 		echo "			<td style='vertical-align: top; text-align: right; white-space: nowrap;'>\n";
-		echo "				<input type='text' class='txt' style='width: 150px' name='search' id='search' value='".escape($search)."'>\n";
-		echo "				<input type='submit' class='btn' name='submit' value='".$text['button-search']."'>\n";
+		echo "				<input type='text' class='txt' style='width: 150px' name='search' id='search' value='".escape($search)."'>";
+		echo "				<input type='submit' class='btn' name='submit' value='".$text['button-search']."'>";
 		if ($paging_controls_mini != '') {
 			echo 			"<span style='margin-left: 15px;'>".$paging_controls_mini."</span>\n";
 		}
@@ -165,9 +163,8 @@
 	echo "		</td>\n";
 	echo "	</tr>\n";	
 	echo "</table>\n";
-	echo "<br>\n";
-
-	echo "<div class='card'>\n";
+	echo "<br>";
+	
 	echo "<table class='tr_hover' width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo th_order_by('extension', $text['table-extension'], $order_by,$order);
@@ -204,13 +201,12 @@
 		unset($sql, $result, $row_count);
 	} //end if results
 
-	echo "</table>\n";
-	echo "</div>\n";
+	echo "</table>";
 	if (strlen($paging_controls) > 0) {
-		echo "<br />\n";
+		echo "<br />";
 		echo $paging_controls."\n";
 	}
-	echo "<br><br>\n";
+	echo "<br><br>";
 
 	if ($is_included != "true") {
 		require_once "resources/footer.php";
