@@ -26,4 +26,28 @@
 		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
 		$y++;
 
-?>
+	//default settings
+		$y = 0;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "be9adae6-cef6-4fb7-80dd-d8da4b009884";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "zoiper";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "page_id";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "";
+		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "a14cd664-4cdf-4519-89f0-3dee0b43b49f";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "zoiper";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "provider_id";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "";
+		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "583a6b99-503e-4e49-8ce5-c8cfa55405bf";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "zoiper";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "outbound_proxy";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "";
