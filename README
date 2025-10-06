@@ -1,6 +1,6 @@
 This adds a one-click install for both the Desktop and Mobile Zoiper APPs in the User Portal. The page is accessible by end users.
 
-I used the FREE Zoiper OEM account
+Use the FREE Zoiper OEM account
 
 Go to: https://oem.zoiper.com/
 Sign up for Login
@@ -14,7 +14,7 @@ Below the title " The Do It Yourself way: make your own page with instructions,"
 https://www.zoiper.com/en/page/MYMOBILEPAGEID?u=&h=&p=&o=&t=&x=&a=&tr="
 Copy the mobile page ID
 
-On your server, clone the Zoiper into the app directory
+On your server, clone Zoiper into the app directory
 cd /var/www/fusionpbx/app
 git clone https://github.com/fusionpbx/fusionpbx-app-zoiper.git zoiper
 chown -R www-data:www-data /var/www/fusionpbx/app/zoiper
@@ -25,7 +25,7 @@ Menu Defaults and Permission Defaults.
 Log out and back in
 
 Advanced -> Default Settings
-Add a Default Setting
+After running Upgrade -> App Defaults, these settings will be added automatically.
 
 Category: zoiper
 Subcategory: page_id
