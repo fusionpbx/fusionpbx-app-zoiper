@@ -25,7 +25,7 @@ Menu Defaults and Permission Defaults.
 Log out and back in
 
 Advanced -> Default Settings
-After running Upgrade -> App Defaults, these settings will be added automatically.
+These settings will be added by Upgrade -> App Defaults, or when using upgrade.php from the command line.
 
 Category: zoiper
 Subcategory: page_id
